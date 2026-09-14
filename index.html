@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Net Guardian — Monitoramento de rede inteligente</title>
+  <meta name="description"
+    content="Net Guardian monitora sua rede local em tempo real e transforma o tráfego em alertas e gráficos que qualquer pessoa entende." />
+  <link rel="stylesheet" href="dist/css/styles.css">
+
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: '#080D19',
+            surface: '#111A2E',
+            surface2: '#182339',
+            line: '#26314D',
+            accent: '#2DD4BF',
+            accent2: '#22C7B0',
+            violet: '#7C6AF5',
+            alert: '#FB7185',
+            ink: '#E7ECF5',
+            muted: '#7C8AA8',
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body class="bg-base text-ink font-body antialiased">
+
+
+  <div id="boot-overlay" class="fixed inset-0 z-[100] bg-base flex items-center justify-center px-6">
+    <div class="w-full max-w-md">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        <span class="font-mono text-xs text-muted">net-guardian · carregando sitema de dados</span>
+      </div>
+      <div id="boot-lines" class="font-mono text-sm text-accent/90 space-y-1.5 min-h-[112px]"></div>
+      <div class="mt-5 h-[3px] w-full bg-red-600/5 rounded-full overflow-hidden">
+        <div id="boot-bar" class="h-full bg-accent rounded-full" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="cursor" class="hidden fixed top-0 left-0 z-[90] pointer-events-none">
+    <div id="cursor-ring"
+      class="relative -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border border-accent/70 transition-transform duration-150">
+      <span class="absolute left-1/2 top-0 -translate-x-1/2 w-px h-1.5 bg-accent/70"></span>
+      <span class="absolute left-1/2 bottom-0 -translate-x-1/2 w-px h-1.5 bg-accent/70"></span>
+      <span class="absolute top-1/2 left-0 -translate-y-1/2 h-px w-1.5 bg-accent/70"></span>
+      <span class="absolute top-1/2 right-0 -translate-y-1/2 h-px w-1.5 bg-accent/70"></span>
+    </div>
+    <div id="cursor-dot" class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-accent">
+    </div>
+  </div>
+
+  <!-- textura de grain, sutil, sobre toda a página -->
+  <div class="grain-overlay fixed inset-0 z-[80] pointer-events-none"></div>
+
+
+  <!-- HEADER -->
+  <header class="fixed top-0 inset-x-0 z-50 border-b border-line/50 bg-base/70 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+
+        <a href="#top" class="flex items-center gap-2.5 shrink-0">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 2L26 6.5V14C26 21.2 21.3 26.8 15 28.5C8.7 26.8 4 21.2 4 14V6.5L15 2Z" stroke="#2DD4BF"
+              stroke-width="1.6" fill="#2DD4BF" fill-opacity="0.08" />
+
+          </svg>
+          <span class="font-display font-semibold text-lg tracking-tight text-ink">Net Guardian</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-9">
+          <a href="#problema" class="nav-link text-sm text-muted hover:text-ink transition-colors">O problema</a>
+          <a href="#solucao" class="nav-link text-sm text-muted hover:text-ink transition-colors">A solução</a>
+          <a href="#funcionalidades"
+            class="nav-link text-sm text-muted hover:text-ink transition-colors">Funcionalidades</a>
+          <a href="#como-funciona" class="nav-link text-sm text-muted hover:text-ink transition-colors">Como
+            funciona</a>
+        </nav>
+
+        <div class="hidden md:flex items-center gap-4">
+          <a href="#publico" class="text-sm text-muted hover:text-ink transition-colors">É para você?</a>
+          <a href="#cta"
+            class="font-display text-sm font-medium bg-accent text-base px-4 py-2.5 rounded-lg hover:bg-accent2 hover:shadow-[0_0_25px_-5px_rgba(45,212,191,0.6)] transition-all">
+            Testar agora
+          </a>
+        </div>
+
+        <button id="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu"
+          class="md:hidden relative w-9 h-9 flex items-center justify-center">
+          <span id="bar-1"
+            class="absolute block h-0.5 w-6 bg-ink rounded-full transition-all duration-300 -translate-y-1.5"></span>
+          <span id="bar-2" class="absolute block h-0.5 w-6 bg-ink rounded-full transition-all duration-300"></span>
+          <span id="bar-3"
+            class="absolute block h-0.5 w-6 bg-ink rounded-full transition-all duration-300 translate-y-1.5"></span>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-menu"
+      class="md:hidden max-h-0 overflow-hidden transition-all duration-300 ease-in-out border-t border-line/60 bg-surface">
+      <div class="px-6 py-5 flex flex-col gap-4">
+        <a href="#problema" class="mobile-link text-muted hover:text-ink transition-colors">O problema</a>
+        <a href="#solucao" class="mobile-link text-muted hover:text-ink transition-colors">A solução</a>
+        <a href="#funcionalidades" class="mobile-link text-muted hover:text-ink transition-colors">Funcionalidades</a>
+        <a href="#como-funciona" class="mobile-link text-muted hover:text-ink transition-colors">Como funciona</a>
+        <a href="#publico" class="mobile-link text-muted hover:text-ink transition-colors">É para você?</a>
+        <a href="#cta"
+          class="mobile-link font-display font-medium bg-accent text-base px-4 py-2.5 rounded-lg text-center mt-2">
+          Testar agora
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO 3D -->
+  <section id="top" class="relative min-h-[100svh] flex flex-col overflow-hidden bg-base">
+
+    <!-- cena 3D de fundo -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- vinheta para dar contraste ao texto sobre a cena 3D -->
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,#080D19_78%)]">
+    </div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-base to-transparent"></div>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-base to-transparent"></div>
+
+    <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-32 pb-16 text-center">
+
+      <div
+        class="inline-flex items-center gap-2 text-xs text-accent border border-accent/25 bg-accent/5 rounded-full px-3 py-1.5 mb-7">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+        Monitoramento de rede em tempo real
+      </div>
+
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.06] font-semibold text-ink max-w-3xl">
+        Sua rede tem tráfego<br class="hidden sm:block" /> que você nunca viu.
+      </h1>
+
+      <p class="mt-6 text-lg text-muted max-w-xl leading-relaxed">
+        Todos os dias, dezenas de conexões entram e saem da sua rede sem que você perceba. O Net Guardian escuta cada pacote, transforma esse ruído técnico em uma linguagem que qualquer pessoa entende, e te avisa no exato momento em que algo foge do padrão — antes que vire um problema.
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+        <a href="#cta"
+          class="magnetic font-display font-medium bg-accent text-base px-6 py-3.5 rounded-lg hover:bg-accent2 hover:shadow-[0_0_35px_-8px_rgba(45,212,191,0.7)] transition-all">
+          Conheça o Net Guardian
+        </a>
+        <a href="#como-funciona"
+          class="magnetic font-display font-medium text-ink border border-line px-6 py-3.5 rounded-lg hover:border-muted hover:bg-white/5 transition-all">
+          Ver como funciona
+        </a>
+      </div>
+
+      <!-- painel de vidro com tilt 3D -->
+      <div class="float mt-16 w-full max-w-2xl">
+        <div id="tilt-panel" class="glass-panel relative rounded-2xl overflow-hidden text-left">
+          <div class="panel-shine"></div>
+
+          <div class="relative flex items-center justify-between px-5 py-3.5 border-b border-white/5">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-alert/70"></span>
+              <span class="w-2 h-2 rounded-full bg-yellow-400/50"></span>
+              <span class="w-2 h-2 rounded-full bg-accent/70"></span>
+            </div>
+            <span class="font-mono text-xs text-muted">rede-local · monitor.live</span>
+          </div>
+
+          <div class="relative p-6 grid sm:grid-cols-[1.2fr,1fr] gap-6">
+
+            <div>
+              <div class="flex items-baseline justify-between mb-4">
+                <p class="text-sm text-muted">Dispositivos ativos</p>
+                <p class="font-mono text-2xl text-ink">14</p>
+              </div>
+
+              <ul class="space-y-2.5">
+                <li
+                  class="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.03] px-4 py-2.5">
+                  <div class="flex items-center gap-3">
+                    <span class="relative text-accent node-pulse"><span
+                        class="block w-2 h-2 rounded-full bg-accent"></span></span>
+                    <div>
+                      <p class="text-sm text-ink">TV-Sala</p>
+                      <p class="font-mono text-xs text-muted">192.168.0.14</p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-muted">1.2 MB/s</span>
+                </li>
+
+                <li
+                  class="flex items-center justify-between rounded-lg border border-alert/25 bg-alert/[0.06] px-4 py-2.5">
+                  <div class="flex items-center gap-3">
+                    <span class="relative text-alert node-pulse"><span
+                        class="block w-2 h-2 rounded-full bg-alert"></span></span>
+                    <div>
+                      <p class="text-sm text-ink">Dispositivo não identificado</p>
+                      <p class="font-mono text-xs text-muted">192.168.0.47</p>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs text-alert">verificar</span>
+                </li>
+              </ul>
+            </div>
+
+            <div
+              class="flex flex-col justify-between gap-4 border-t sm:border-t-0 sm:border-l border-white/5 pt-4 sm:pt-0 sm:pl-6">
+              <div>
+                <p class="font-mono text-2xl text-ink">&lt; 3s</p>
+                <p class="text-xs text-muted mt-1">para detectar um novo dispositivo</p>
+              </div>
+              <div>
+                <p class="font-mono text-2xl text-ink">24/7</p>
+                <p class="text-xs text-muted mt-1">captura contínua na sua rede</p>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-alert">
+                <span class="w-1.5 h-1.5 rounded-full bg-alert"></span>
+                1 alerta requer sua atenção
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LOG AO VIVO  -->
+  <section class="relative border-y border-line/40 bg-surface/60 py-5 px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex items-center gap-5">
+      <span class="shrink-0 flex items-center gap-2 font-mono text-xs text-muted">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+        monitor.log
+      </span>
+      <div id="log-ticker" class="relative flex-1 h-16 overflow-hidden">
+        <div id="log-lines" class="flex flex-col gap-1.5 font-mono text-xs"></div>
+      </div>
+    </div>
+  </section>
+
+  <!--  PROBLEMA  -->
+  <section id="problema" class="relative py-28 px-6 lg:px-8 border-t border-line/40">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl">
+        <p class="text-sm font-mono text-alert mb-4">O problema</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Sua rede é um lugar cheio de pontos cegos.
+        </h2>
+        <p class="mt-5 text-muted text-lg leading-relaxed">
+          Um roteador doméstico comum hoje conecta dezenas de aparelhos diferentes — TVs, celulares, câmeras, assistentes de voz, notebooks de visita, até a geladeira. Cada um deles troca dados o tempo todo, mas quase nenhuma dessas conexões é visível para quem administra a rede. O resultado é uma sensação estranha de estar no controle sem realmente estar: você sabe que a internet "está funcionando", mas não sabe exatamente para quem, nem por quê.
+        </p>
+      </div>
+
+      <div class="mt-14 grid md:grid-cols-3 gap-6">
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <div class="w-11 h-11 rounded-lg bg-alert/10 border border-alert/20 flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="1.8">
+                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z" />
+                <circle cx="12" cy="12" r="2.6" />
+                <line x1="4" y1="4" x2="20" y2="20" />
+              </svg>
+            </div>
+            <h3 class="font-display text-lg font-semibold text-ink mb-2">Visibilidade zero</h3>
+            <p class="text-sm text-muted leading-relaxed">Pergunte a qualquer pessoa quantos dispositivos estão conectados à própria rede agora mesmo. Raramente alguém sabe responder com certeza — e é exatamente essa pergunta simples que o Net Guardian responde em segundos.</p>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <div class="w-11 h-11 rounded-lg bg-alert/10 border border-alert/20 flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="1.8">
+                <path d="M4 17V7l8-4 8 4v10l-8 4-8-4Z" />
+                <path d="M4 7l8 4 8-4" />
+                <path d="M12 11v10" />
+              </svg>
+            </div>
+            <h3 class="font-display text-lg font-semibold text-ink mb-2">Ferramentas técnicas demais</h3>
+            <p class="text-sm text-muted leading-relaxed">As soluções de monitoramento de rede que existem hoje foram feitas por especialistas, para especialistas. Gráficos cheios de protocolos, siglas e métricas que só fazem sentido para quem já entende de redes — o que deixa a maioria dos usuários de fora justamente da informação que mais importa.</p>
+          </div>
+        </div>
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <div class="w-11 h-11 rounded-lg bg-alert/10 border border-alert/20 flex items-center justify-center mb-5">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3.5 2" />
+              </svg>
+            </div>
+            <h3 class="font-display text-lg font-semibold text-ink mb-2">Resposta tardia</h3>
+            <p class="text-sm text-muted leading-relaxed">Quando um comportamento estranho finalmente chama atenção — um consumo de dados fora do normal, um dispositivo desconhecido na lista — geralmente já se passou tempo suficiente para que o problema, se existir, tenha se instalado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--  CTA FINAL  -->
+  <section id="cta" class="relative py-28 px-6 lg:px-8 border-t border-line/40 overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(45,212,191,0.08),transparent_60%)]">
+    </div>
+    <div class="relative max-w-3xl mx-auto text-center">
+      <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+        Comece a enxergar sua rede hoje.
+      </h2>
+      <p class="mt-5 text-muted text-lg">
+        O Net Guardian está em desenvolvimento como projeto de TCC. Acompanhe o progresso, teste as funcionalidades disponíveis ou entre em contato com o time por trás do projeto.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+        <a href="#"
+          class="magnetic font-display font-medium bg-accent text-base px-6 py-3.5 rounded-lg hover:bg-accent2 hover:shadow-[0_0_35px_-8px_rgba(45,212,191,0.7)] transition-all">
+          Baixar o app
+        </a>
+        <a href="#"
+          class="magnetic font-display font-medium text-ink border border-line px-6 py-3.5 rounded-lg hover:border-muted hover:bg-white/5 transition-all">
+          Ver repositório no GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!--  FOOTER = -->
+  <footer class="relative border-t border-line/40 px-6 lg:px-8 py-14">
+    <div class="max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div>
+        <div class="flex items-center gap-2.5 mb-4">
+          <svg width="26" height="26" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 2L26 6.5V14C26 21.2 21.3 26.8 15 28.5C8.7 26.8 4 21.2 4 14V6.5L15 2Z" stroke="#2DD4BF"
+              stroke-width="1.6" fill="#2DD4BF" fill-opacity="0.08" />
+            <circle cx="15" cy="13.5" r="3.2" stroke="#2DD4BF" stroke-width="1.6" />
+            <path d="M10.5 21C11.5 18.5 13.1 17.2 15 17.2C16.9 17.2 18.5 18.5 19.5 21" stroke="#2DD4BF"
+              stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <span class="font-display font-semibold text-ink">Net Guardian</span>
+        </div>
+        <p class="text-sm text-muted leading-relaxed max-w-xs">Monitoramento de rede que qualquer pessoa consegue
+          interpretar.</p>
+      </div>
+
+      <div>
+        <p class="font-display text-sm text-ink mb-4">Navegação</p>
+        <ul class="space-y-2.5 text-sm text-muted">
+          <li><a href="#problema" class="hover:text-ink transition-colors">O problema</a></li>
+          <li><a href="#solucao" class="hover:text-ink transition-colors">A solução</a></li>
+          <li><a href="#funcionalidades" class="hover:text-ink transition-colors">Funcionalidades</a></li>
+          <li><a href="#como-funciona" class="hover:text-ink transition-colors">Como funciona</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="font-display text-sm text-ink mb-4">Projeto</p>
+        <ul class="space-y-2.5 text-sm text-muted">
+          <li>TCC — Desenvolvimento Web 2026</li>
+          <li>Tailwind CSS · Vanilla JavaScript</li>
+          <li>Repositório no GitHub</li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="font-display text-sm text-ink mb-4">Integrantes</p>
+        <ul class="space-y-2.5 text-sm text-muted">
+          <li>Diego Duarte - 3°T.I</li>
+          <li>Eduardo Mosa - 3° T.I</li>
+          <li>Lorenzo Cussioli - 3° T.I</li>
+          <li>Luiz Henrique - 3° T.I</li>
+          <li>Ruan Oliveira - 3° T.I</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto mt-12 pt-8 border-t border-line/40 text-xs text-muted text-center">
+      © 2026 Net Guardian — Projeto de TCC. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+
+</body>
+
+</html>
