@@ -1,2 +1,18 @@
 @import "tailwindcss";
 
+
+@theme {
+        --color-base: '#080D19';
+        --color-surface: '#111A2E';
+        --color-surface2: '#182339';
+        --color-line: '#26314D';
+        --color-accent: '#2DD4BF';
+        --color-accent2: '#22C7B0';
+        --color-violet: '#7C6AF5';
+        --color-alert: '#FB7185';
+        --color-ink: '#E7ECF5';
+        --color-muted: '#7C8AA8';
+        --font-Space-Grotesk:"Space Grotesk";
+        --font-body: "Inter";
+        --font-mono: "JetBrains Mono", 'monospace'
+    }

@@ -462,4 +462,133 @@ if(!prefersReducedMotion){
   animate();
 })();
 
+// ---------- Abas de "Como funciona" ----------
+    const stepTabs = document.querySelectorAll('.step-tab');
+    const stepContents = document.querySelectorAll('.step-content');
+    stepTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.step;
 
+
+        stepTabs.forEach((t) => {
+          t.classList.remove('active', 'border-accent', 'bg-accent/10', 'text-ink');
+          t.classList.add('border-line', 'text-muted');
+        });
+        tab.classList.add('active', 'border-accent', 'bg-accent/10', 'text-ink');
+        tab.classList.remove('border-line', 'text-muted');
+
+
+        stepContents.forEach((content) => {
+          content.classList.toggle('hidden', content.dataset.step !== target);
+        });
+      });
+    });
+
+
+    // ---------- Contadores animados (Benefícios) ----------
+    const counters = document.querySelectorAll('.counter');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target, 10);
+          const suffix = el.dataset.suffix || '';
+          const duration = 900;
+          const start = performance.now();
+
+
+          function tick(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const value = Math.floor(progress * target);
+            el.textContent = value + suffix;
+            if (progress < 1) requestAnimationFrame(tick);
+            else el.textContent = target + suffix;
+          }
+          requestAnimationFrame(tick);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach((c) => counterObserver.observe(c));
+
+
+    // ---------- Boot sequence ----------
+    (function () {
+      const overlay = document.getElementById('boot-overlay');
+      const linesEl = document.getElementById('boot-lines');
+      const bar = document.getElementById('boot-bar');
+      const messages = [
+        '> inicializando núcleo do net guardian...',
+        '> sincronizando sensores de rede...',
+        '> estabelecendo conexão segura com a nuvem...',
+        '> sistema pronto.'
+      ];
+
+
+      if (prefersReducedMotion) {
+        overlay.remove();
+        return;
+      }
+
+
+      document.body.style.overflow = 'hidden';
+      let i = 0;
+
+
+      function nextLine() {
+        if (i >= messages.length) {
+          setTimeout(() => {
+            overlay.style.transition = 'opacity 0.5s ease, transform 0.6s ease';
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'scale(1.03)';
+            setTimeout(() => {
+              overlay.remove();
+              document.body.style.overflow = '';
+            }, 550);
+          }, 250);
+          return;
+        }
+        const p = document.createElement('p');
+        p.textContent = messages[i];
+        linesEl.appendChild(p);
+        bar.style.transition = 'width 0.4s ease';
+        bar.style.width = `${((i + 1) / messages.length) * 100}%`;
+        i++;
+        setTimeout(nextLine, 420);
+      }
+      setTimeout(nextLine, 300);
+    })();
+
+
+
+
+// alguns nós de alerta (comportamento suspeito)
+      const alertIdx = [Math.floor(NODE_COUNT * 0.15), Math.floor(NODE_COUNT * 0.5), Math.floor(NODE_COUNT * 0.8)];
+      const alertGeo = new THREE.BufferGeometry().setFromPoints(alertIdx.map(i => nodePositions[i]));
+      const alertMat = new THREE.PointsMaterial({ color: 0xFB7185, size: 0.24, transparent: true, opacity: 1 });
+      group.add(new THREE.Points(alertGeo, alertMat));
+
+
+      // linhas conectando nós próximos (malha da rede)
+      const lineVerts = [];
+      const threshold = 2.5;
+      for (let i = 0; i < nodePositions.length; i++) {
+        for (let j = i + 1; j < nodePositions.length; j++) {
+          if (nodePositions[i].distanceTo(nodePositions[j]) < threshold) {
+            lineVerts.push(nodePositions[i], nodePositions[j]);
+          }
+        }
+      }
+      const lineGeo = new THREE.BufferGeometry().setFromPoints(lineVerts);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x2DD4BF, transparent: true, opacity: 0.1 });
+      group.add(new THREE.LineSegments(lineGeo, lineMat));
+
+
+      let mouseX = 0, mouseY = 0;
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5);
+        mouseY = (e.clientY / window.innerHeight - 0.5);
+      });
+
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

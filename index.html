@@ -44,7 +44,7 @@
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body class="bg-base text-ink font-body antialiased">
@@ -54,10 +54,10 @@
     <div class="w-full max-w-md">
       <div class="flex items-center gap-2 mb-4">
         <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-        <span class="font-mono text-xs text-muted">net-guardian · carregando sitema de dados</span>
+        <span class="font-mono text-xs text-muted">net-guardian · carregando sistema de dados</span>
       </div>
       <div id="boot-lines" class="font-mono text-sm text-accent/90 space-y-1.5 min-h-[112px]"></div>
-      <div class="mt-5 h-[3px] w-full bg-red-600/5 rounded-full overflow-hidden">
+      <div class="mt-5 h-[3px] w-full bg-white/5 rounded-full overflow-hidden">
         <div id="boot-bar" class="h-full bg-accent rounded-full" style="width:0%"></div>
       </div>
     </div>
@@ -89,17 +89,16 @@
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 2L26 6.5V14C26 21.2 21.3 26.8 15 28.5C8.7 26.8 4 21.2 4 14V6.5L15 2Z" stroke="#2DD4BF"
               stroke-width="1.6" fill="#2DD4BF" fill-opacity="0.08" />
-
           </svg>
           <span class="font-display font-semibold text-lg tracking-tight text-ink">Net Guardian</span>
         </a>
 
         <nav class="hidden md:flex items-center gap-9">
-          <a href="#problema" class="nav-link text-sm text-muted hover:text-ink transition-colors">O problema</a>
-          <a href="#solucao" class="nav-link text-sm text-muted hover:text-ink transition-colors">A solução</a>
+          <a href="#problema" class="nav-link text-sm text hover:text-ink transition-colors">O problema</a>
+          <a href="#solucao" class="nav-link text-sm text hover:text-ink transition-colors">A solução</a>
           <a href="#funcionalidades"
-            class="nav-link text-sm text-muted hover:text-ink transition-colors">Funcionalidades</a>
-          <a href="#como-funciona" class="nav-link text-sm text-muted hover:text-ink transition-colors">Como
+            class="nav-link text-sm text hover:text-ink transition-colors">Funcionalidades</a>
+          <a href="#como-funciona" class="nav-link text-sm text hover:text-ink transition-colors">Como
             funciona</a>
         </nav>
 
@@ -141,16 +140,19 @@
   <!-- HERO 3D -->
   <section id="top" class="relative min-h-[100svh] flex flex-col overflow-hidden bg-base">
 
-    <!-- cena 3D de fundo -->
-    <canvas id="hero-canvas"></canvas>
+    <!-- cena 3D de fundo (camada 0) -->
+    <canvas id="hero-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:0;"></canvas>
 
-    <!-- vinheta para dar contraste ao texto sobre a cena 3D -->
+    <!-- vinheta para dar contraste ao texto sobre a cena 3D (camada 1) -->
     <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_15%,#080D19_78%)]">
+      class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(ellipse_at_center,transparent_15%,#080D19_78%)]">
     </div>
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-base to-transparent"></div>
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-base to-transparent"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-40 bg-gradient-to-b from-base to-transparent">
+    </div>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-56 bg-gradient-to-t from-base to-transparent">
+    </div>
 
+    <!-- conteúdo (camada 10, acima da animação) -->
     <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-32 pb-16 text-center">
 
       <div
@@ -163,8 +165,10 @@
         Sua rede tem tráfego<br class="hidden sm:block" /> que você nunca viu.
       </h1>
 
-      <p class="mt-6 text-lg text-muted max-w-xl leading-relaxed">
-        Todos os dias, dezenas de conexões entram e saem da sua rede sem que você perceba. O Net Guardian escuta cada pacote, transforma esse ruído técnico em uma linguagem que qualquer pessoa entende, e te avisa no exato momento em que algo foge do padrão — antes que vire um problema.
+      <p class="mt-6 text-lg text max-w-xl leading-relaxed">
+        Todos os dias, dezenas de conexões entram e saem da sua rede sem que você perceba. O Net Guardian escuta cada
+        pacote, transforma esse ruído técnico em uma linguagem que qualquer pessoa entende, e te avisa no exato momento
+        em que algo foge do padrão — antes que vire um problema.
       </p>
 
       <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
@@ -173,13 +177,13 @@
           Conheça o Net Guardian
         </a>
         <a href="#como-funciona"
-          class="magnetic font-display font-medium text-ink border border-line px-6 py-3.5 rounded-lg hover:border-muted hover:bg-white/5 transition-all">
+          class="magnetic font-display font-medium text-ink border border-white px-6 py-3.5 rounded-lg hover:border-muted hover:bg-white/5 transition-all">
           Ver como funciona
         </a>
       </div>
 
       <!-- painel de vidro com tilt 3D -->
-      <div class="float mt-16 w-full max-w-2xl">
+      <div class="bg-green-500/10 float mt-16 w-full max-w-2xl">
         <div id="tilt-panel" class="glass-panel relative rounded-2xl overflow-hidden text-left">
           <div class="panel-shine"></div>
 
@@ -265,6 +269,8 @@
     </div>
   </section>
 
+  
+
   <!--  PROBLEMA  -->
   <section id="problema" class="relative py-28 px-6 lg:px-8 border-t border-line/40">
     <div class="max-w-7xl mx-auto">
@@ -274,7 +280,11 @@
           Sua rede é um lugar cheio de pontos cegos.
         </h2>
         <p class="mt-5 text-muted text-lg leading-relaxed">
-          Um roteador doméstico comum hoje conecta dezenas de aparelhos diferentes — TVs, celulares, câmeras, assistentes de voz, notebooks de visita, até a geladeira. Cada um deles troca dados o tempo todo, mas quase nenhuma dessas conexões é visível para quem administra a rede. O resultado é uma sensação estranha de estar no controle sem realmente estar: você sabe que a internet "está funcionando", mas não sabe exatamente para quem, nem por quê.
+          Um roteador doméstico comum hoje conecta dezenas de aparelhos diferentes — TVs, celulares, câmeras,
+          assistentes de voz, notebooks de visita, até a geladeira. Cada um deles troca dados o tempo todo, mas quase
+          nenhuma dessas conexões é visível para quem administra a rede. O resultado é uma sensação estranha de estar no
+          controle sem realmente estar: você sabe que a internet "está funcionando", mas não sabe exatamente para quem,
+          nem por quê.
         </p>
       </div>
 
@@ -290,13 +300,15 @@
               </svg>
             </div>
             <h3 class="font-display text-lg font-semibold text-ink mb-2">Visibilidade zero</h3>
-            <p class="text-sm text-muted leading-relaxed">Pergunte a qualquer pessoa quantos dispositivos estão conectados à própria rede agora mesmo. Raramente alguém sabe responder com certeza — e é exatamente essa pergunta simples que o Net Guardian responde em segundos.</p>
+            <p class="text-sm text-muted leading-relaxed">Pergunte a qualquer pessoa quantos dispositivos estão
+              conectados à própria rede agora mesmo. Raramente alguém sabe responder com certeza — e é exatamente essa
+              pergunta simples que o Net Guardian responde em segundos.</p>
           </div>
         </div>
 
         <div class="tilt-card glass-panel relative rounded-2xl p-7">
           <div class="panel-shine"></div>
-          <div class="relative">
+          <div class="border-line relative">
             <div class="w-11 h-11 rounded-lg bg-alert/10 border border-alert/20 flex items-center justify-center mb-5">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="1.8">
                 <path d="M4 17V7l8-4 8 4v10l-8 4-8-4Z" />
@@ -305,7 +317,10 @@
               </svg>
             </div>
             <h3 class="font-display text-lg font-semibold text-ink mb-2">Ferramentas técnicas demais</h3>
-            <p class="text-sm text-muted leading-relaxed">As soluções de monitoramento de rede que existem hoje foram feitas por especialistas, para especialistas. Gráficos cheios de protocolos, siglas e métricas que só fazem sentido para quem já entende de redes — o que deixa a maioria dos usuários de fora justamente da informação que mais importa.</p>
+            <p class="text-sm text-muted leading-relaxed">As soluções de monitoramento de rede que existem hoje foram
+              feitas por especialistas, para especialistas. Gráficos cheios de protocolos, siglas e métricas que só
+              fazem sentido para quem já entende de redes — o que deixa a maioria dos usuários de fora justamente da
+              informação que mais importa.</p>
           </div>
         </div>
 
@@ -319,12 +334,402 @@
               </svg>
             </div>
             <h3 class="font-display text-lg font-semibold text-ink mb-2">Resposta tardia</h3>
-            <p class="text-sm text-muted leading-relaxed">Quando um comportamento estranho finalmente chama atenção — um consumo de dados fora do normal, um dispositivo desconhecido na lista — geralmente já se passou tempo suficiente para que o problema, se existir, tenha se instalado.</p>
+            <p class="text-sm text-muted leading-relaxed">Quando um comportamento estranho finalmente chama atenção — um
+              consumo de dados fora do normal, um dispositivo desconhecido na lista — geralmente já se passou tempo
+              suficiente para que o problema, se existir, tenha se instalado.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ===================== SOLUÇÃO ===================== -->
+  <section id="solucao" class="relative py-28 px-6 lg:px-8 border-t border-line/40 bg-surface/40">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+
+      <div>
+        <p class="text-sm font-mono text-accent mb-4">A solução</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Veja como os dados da rede viram informações fáceis de entender.
+        </h2>
+        <p class="mt-5 text-muted text-lg leading-relaxed max-w-lg">
+          O Net Guardian ajuda você a entender o que acontece na rede, sem precisar analisar dados técnicos o tempo
+          todo.
+        </p>
+
+
+
+
+        <ul class="mt-8 space-y-5">
+          <li class="flex gap-4">
+            <span class="font-mono text-sm text-accent mt-0.5">01</span>
+            <p class="text-sm text-muted leading-relaxed"><span class="text-ink font-medium">Captura:</span> um script
+              acompanha os pacotes que circulam pela rede local.</p>
+          </li>
+          <li class="flex gap-4">
+            <span class="font-mono text-sm text-accent mt-0.5">02</span>
+            <p class="text-sm text-muted leading-relaxed"><span class="text-ink font-medium">Processamento:</span> as
+              informações são organizadas e enviadas para um banco de dados na nuvem.</p>
+          </li>
+          <li class="flex gap-4">
+            <span class="font-mono text-sm text-accent mt-0.5">03</span>
+            <p class="text-sm text-muted leading-relaxed"><span class="text-ink font-medium">Interpretação:</span> o
+              aplicativo apresenta gráficos, alertas e listas para ajudar você a decidir o que fazer: bloquear ou
+              autorizar.</p>
+          </li>
+        </ul>
+      </div>
+
+
+
+
+      <!-- diagrama de fluxo -->
+      <div class="glass-panel relative rounded-2xl p-8 sm:p-10">
+        <div class="panel-shine"></div>
+        <svg viewBox="0 0 360 200" class="relative w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+          <path id="flow-path" d="M40,40 C120,40 120,100 180,100 C240,100 240,160 320,160" stroke="#2DD4BF"
+            stroke-width="2" fill="none" stroke-dasharray="6 8" opacity="0.6" />
+
+
+
+
+          <g>
+            <circle cx="40" cy="40" r="26" fill="#182339" stroke="#2DD4BF" stroke-width="1.5" />
+            <text x="40" y="45" text-anchor="middle" font-family="JetBrains Mono" font-size="9"
+              fill="#E7ECF5">script</text>
+          </g>
+          <g>
+            <circle cx="180" cy="100" r="26" fill="#182339" stroke="#7C6AF5" stroke-width="1.5" />
+            <text x="180" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="9"
+              fill="#E7ECF5">nuvem</text>
+          </g>
+          <g>
+            <circle cx="320" cy="160" r="26" fill="#182339" stroke="#2DD4BF" stroke-width="1.5" />
+            <text x="320" y="165" text-anchor="middle" font-family="JetBrains Mono" font-size="9"
+              fill="#E7ECF5">app</text>
+          </g>
+        </svg>
+        <p class="relative mt-4 text-center font-mono text-xs text-muted">rede local → banco de dados → painel no
+          celular</p>
+      </div>
+
+
+
+
+    </div>
+  </section>
+
+
+
+
+  <!-- ===================== FUNCIONALIDADES ===================== -->
+  <section id="funcionalidades" class="relative py-28 px-6 lg:px-8 border-t border-line/40">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl">
+        <p class="text-sm font-mono text-accent mb-4">Funcionalidades</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Tudo o que você precisa para acompanhar sua rede e tomar decisões.
+        </h2>
+      </div>
+
+
+
+
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="1.8"
+              class="mb-5">
+              <path d="M3 12h4l2-8 4 16 2-8h6" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Monitoramento em tempo real</h3>
+            <p class="text-sm text-muted leading-relaxed">Veja o que está acontecendo na rede em tempo real, sem
+              precisar atualizar a página ou esperar por um relatório.</p>
+          </div>
+        </div>
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="1.8"
+              class="mb-5">
+              <rect x="3" y="4" width="18" height="6" rx="1.5" />
+              <rect x="3" y="14" width="18" height="6" rx="1.5" />
+              <circle cx="7" cy="7" r="1" />
+              <circle cx="7" cy="17" r="1" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Lista de dispositivos</h3>
+            <p class="text-sm text-muted leading-relaxed">Confira quais aparelhos estão conectados, seus endereços IP e
+              quanto cada um consome de dados.</p>
+          </div>
+        </div>
+
+
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="1.8"
+              class="mb-5">
+              <path d="M10.3 3.9 2.5 18a1 1 0 0 0 .9 1.5h17.2a1 1 0 0 0 .9-1.5L13.7 3.9a1 1 0 0 0-1.7 0Z" />
+              <path d="M12 9v4" />
+              <path d="M12 16.5v.01" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Alertas de comportamento suspeito</h3>
+            <p class="text-sm text-muted leading-relaxed">Receba um aviso quando alguma atividade parecer diferente do
+              comportamento normal da rede.</p>
+          </div>
+        </div>
+
+
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="1.8"
+              class="mb-5">
+              <rect x="5" y="11" width="14" height="9" rx="1.5" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Bloqueio e autorização</h3>
+            <p class="text-sm text-muted leading-relaxed">Escolha com apenas um toque se o dispositivo pode continuar
+              conectado ou deve ser bloqueado.</p>
+          </div>
+        </div>
+
+
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="1.8"
+              class="mb-5">
+              <path d="M3 3v18h18" />
+              <path d="M7 15l4-5 3 3 5-7" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Histórico e gráficos</h3>
+            <p class="text-sm text-muted leading-relaxed">Acompanhe o histórico do tráfego e perceba mudanças no uso da
+              rede ao longo do tempo.</p>
+          </div>
+        </div>
+
+
+
+
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="1.8"
+              class="mb-5">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+            </svg>
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Notificações push</h3>
+            <p class="text-sm text-muted leading-relaxed">Receba notificações no celular mesmo quando o aplicativo
+              estiver fechado.</p>
+          </div>
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===================== BENEFÍCIOS ===================== -->
+  <section id="beneficios" class="relative py-28 px-6 lg:px-8 border-t border-line/40 bg-surface/40">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+
+
+
+      <div>
+        <p class="text-sm font-mono text-accent mb-4">Benefícios</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Passe menos tempo procurando problemas e mais tempo resolvendo o que importa.
+        </h2>
+        <p class="mt-5 text-muted text-lg leading-relaxed max-w-lg">
+          O Net Guardian reúne ferramentas para facilitar a rotina de quem precisa cuidar de uma rede, mesmo sem ter
+          conhecimentos avançados na área.
+        </p>
+
+
+
+
+        <ul class="mt-8 space-y-4">
+          <li class="flex items-start gap-3">
+            <span class="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <p class="text-sm text-muted"><span class="text-ink">Economia de tempo</span> — encontre informações sem
+              precisar conferir registros manualmente.</p>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <p class="text-sm text-muted"><span class="text-ink">Simplicidade</span> — entenda os dados técnicos de um
+              jeito mais fácil.</p>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <p class="text-sm text-muted"><span class="text-ink">Mais atenção à segurança</span> — receba alertas quando
+              algo parecer fora do normal.</p>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <p class="text-sm text-muted"><span class="text-ink">Controle à distância</span> — gerencie o acesso à rede
+              pelo aplicativo.</p>
+          </li>
+        </ul>
+      </div>
+
+
+
+
+      <div class="glass-panel relative rounded-2xl p-8 grid grid-cols-2 gap-8">
+        <div class="panel-shine"></div>
+        <div class="relative text-center">
+          <p class="font-mono text-3xl text-accent counter" data-target="14">0</p>
+          <p class="text-xs text-muted mt-2">dispositivos acompanhados</p>
+        </div>
+        <div class="relative text-center">
+          <p class="font-mono text-3xl text-accent counter" data-target="3" data-suffix="s">0</p>
+          <p class="text-xs text-muted mt-2">tempo estimado para detectar</p>
+        </div>
+        <div class="relative text-center">
+          <p class="font-mono text-3xl text-accent counter" data-target="24" data-suffix="/7">0</p>
+          <p class="text-xs text-muted mt-2">monitoramento contínuo</p>
+        </div>
+        <div class="relative text-center">
+          <p class="font-mono text-3xl text-alert counter" data-target="1">0</p>
+          <p class="text-xs text-muted mt-2">alerta em destaque</p>
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </section>
+
+
+
+
+  <!-- ===================== COMO FUNCIONA ===================== -->
+  <section id="como-funciona" class="relative py-28 px-6 lg:px-8 border-t border-line/40">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl mb-14">
+        <p class="text-sm font-mono text-accent mb-4">Como funciona</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Entenda o caminho dos dados até a sua decisão.
+        </h2>
+      </div>
+
+
+
+
+      <!-- abas dos passos -->
+      <div class="flex flex-wrap gap-2 mb-8" id="step-tabs">
+        <button data-step="0"
+          class="step-tab active font-display text-sm px-5 py-2.5 rounded-lg border border-accent bg-accent/10 text-ink transition-all">01
+          · Instale</button>
+        <button data-step="1"
+          class="step-tab font-display text-sm px-5 py-2.5 rounded-lg border border-line text-muted hover:text-ink transition-all">02
+          · Monitore</button>
+        <button data-step="2"
+          class="step-tab font-display text-sm px-5 py-2.5 rounded-lg border border-line text-muted hover:text-ink transition-all">03
+          · Receba alertas</button>
+        <button data-step="3"
+          class="step-tab font-display text-sm px-5 py-2.5 rounded-lg border border-line text-muted hover:text-ink transition-all">04
+          · Decida</button>
+      </div>
+
+
+
+
+      <div class="glass-panel relative rounded-2xl p-8 sm:p-12 min-h-[220px]">
+        <div class="panel-shine"></div>
+        <div class="relative">
+          <div class="step-content" data-step="0">
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Comece instalando o script</h3>
+            <p class="text-muted max-w-xl leading-relaxed">Execute o script em um dispositivo conectado à rede local. A
+              partir daí, ele começa a acompanhar os pacotes que circulam por ela.</p>
+          </div>
+          <div class="step-content hidden" data-step="1">
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Acompanhe o tráfego da rede</h3>
+            <p class="text-muted max-w-xl leading-relaxed">As informações coletadas são processadas e enviadas para a
+              nuvem, onde ficam organizadas para consulta e análise.</p>
+          </div>
+          <div class="step-content hidden" data-step="2">
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Fique de olho nos alertas</h3>
+            <p class="text-muted max-w-xl leading-relaxed">O aplicativo avisa quando percebe algo diferente, como um
+              aparelho novo, um aumento inesperado no tráfego ou uma conexão incomum.</p>
+          </div>
+          <div class="step-content hidden" data-step="3">
+            <h3 class="font-display text-xl font-semibold text-ink mb-3">Escolha como agir</h3>
+            <p class="text-muted max-w-xl leading-relaxed">Pelo aplicativo, você pode escolher como lidar com um
+              dispositivo ou uma atividade suspeita, de forma simples e direta.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- ===================== PÚBLICO-ALVO ===================== -->
+  <section id="publico" class="relative py-28 px-6 lg:px-8 border-t border-line/40 bg-surface/40">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-2xl">
+        <p class="text-sm font-mono text-accent mb-4">Para quem é</p>
+        <h2 class="font-display text-3xl sm:text-4xl font-semibold text-ink leading-tight">
+          Para quem precisa cuidar da rede no dia a dia.
+        </h2>
+      </div>
+
+
+
+
+      <div class="mt-14 grid sm:grid-cols-3 gap-6">
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Casa</h3>
+            <p class="text-sm text-muted leading-relaxed">Para quem quer conferir quais aparelhos usam o Wi-Fi de casa e
+              cuidar melhor da segurança da família.</p>
+          </div>
+        </div>
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Pequeno escritório</h3>
+            <p class="text-sm text-muted leading-relaxed">Para pequenas equipes que não contam com um setor de TI, mas
+              precisam acompanhar o que acontece na rede.</p>
+          </div>
+        </div>
+        <div class="tilt-card glass-panel relative rounded-2xl p-7">
+          <div class="panel-shine"></div>
+          <div class="relative">
+            <h3 class="font-display text-base font-semibold text-ink mb-2">Comércio local</h3>
+            <p class="text-sm text-muted leading-relaxed">Para comércios que oferecem Wi-Fi aos clientes e querem
+              acompanhar os acessos à rede.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
 
   <!--  CTA FINAL  -->
   <section id="cta" class="relative py-28 px-6 lg:px-8 border-t border-line/40 overflow-hidden">
@@ -336,7 +741,8 @@
         Comece a enxergar sua rede hoje.
       </h2>
       <p class="mt-5 text-muted text-lg">
-        O Net Guardian está em desenvolvimento como projeto de TCC. Acompanhe o progresso, teste as funcionalidades disponíveis ou entre em contato com o time por trás do projeto.
+        O Net Guardian está em desenvolvimento como projeto de TCC. Acompanhe o progresso, teste as funcionalidades
+        disponíveis ou entre em contato com o time por trás do projeto.
       </p>
       <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
         <a href="#"
